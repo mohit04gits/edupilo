@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-ink: #15183a;
+  --color-ink-2: #474b6b;
+  --color-paper: #f6f1e7;
+  --color-line: #e2daca;
+  --color-orange: #f2a93b;
+  --color-green: #256446;
+  --color-ink-hover: #272b60;
+  --color-orange-hover: #ffc35f;
+  --color-green-hover: #1d5038;
+  --color-sun: #ffd997;
+  --color-mint: #e2f1e8;
+  --color-cream: #fff4dc;
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+html { scroll-behavior: smooth; }
+body { margin: 0; color: #15183a; background: #fff; font-family: var(--font-body), system-ui, sans-serif; font-size: 17px; line-height: 1.6; }
+* { box-sizing: border-box; }
+a, button { -webkit-tap-highlight-color: transparent; }
+a:focus-visible, button:focus-visible { outline: 2px solid #15183a; outline-offset: 3px; box-shadow: 0 0 0 6px rgb(242 169 59 / .55); }
+.display { font-family: var(--font-display), sans-serif; font-weight: 570; letter-spacing: -.045em; line-height: .98; }
+.body-grid { background-color: #f6f1e7; background-image: radial-gradient(rgb(21 24 58 / .085) 1px, transparent 1.3px); background-size: 24px 24px; }
+.soft-shadow { box-shadow: 0 1px 0 rgb(21 24 58 / .03), 0 18px 40px -28px rgb(21 24 58 / .35); }
+.lesson-shadow { box-shadow: 0 36px 70px -36px rgb(21 24 58 / .55), 0 0 0 1px rgb(21 24 58 / .1); }
+@keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
+.rabbit-float { animation: float 3.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .rabbit-float { animation: none; } }

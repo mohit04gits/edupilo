@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "1.0",
+  "lesson": {
+    "learnerLevel": "CLASS_2",
+    "subject": "MATHEMATICS",
+    "topic": "MULTIPLICATION_AS_EQUAL_GROUPS",
+    "facts": {
+      "groups": 3,
+      "itemsPerGroup": 2,
+      "total": 6,
+      "additionEquation": "2 + 2 + 2 = 6",
+      "multiplicationEquation": "3 × 2 = 6"
+    }
+  },
+  "renderProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "languages": {
+    "en": {
+      "title": "Ria Rabbit's Carrot Groups",
+      "scenes": [
+        {
+          "id": "welcome",
+          "startMs": 0,
+          "endMs": 3120,
+          "caption": "Ria Rabbit has six crunchy carrots!",
+          "learningPurpose": "Introduce the character and six carrots."
+        },
+        {
+          "id": "groups",
+          "startMs": 3120,
+          "endMs": 5760,
+          "caption": "She places three baskets in a row.",
+          "learningPurpose": "Make three equal groups visible."
+        },
+        {
+          "id": "distribute",
+          "startMs": 5760,
+          "endMs": 8240,
+          "caption": "Two carrots go into each basket.",
+          "learningPurpose": "Distribute exactly two carrots to each group."
+        },
+        {
+          "id": "addition",
+          "startMs": 8240,
+          "endMs": 11480,
+          "caption": "Two plus two plus two makes six.",
+          "learningPurpose": "Connect equal groups to repeated addition."
+        },
+        {
+          "id": "multiplication",
+          "startMs": 11480,
+          "endMs": 15360,
+          "caption": "Three groups of two make six. That's multiplication!",
+          "learningPurpose": "Connect equal groups to multiplication."
+        }
+      ]
+    },
+    "hi": {
+      "title": "रिया खरगोश के गाजर समूह",
+      "scenes": [
+        {
+          "id": "welcome",
+          "startMs": 0,
+          "endMs": 3400,
+          "caption": "रिया खरगोश के पास छह कुरकुरी गाजरें हैं!",
+          "learningPurpose": "पात्र और छह गाजरों का परिचय।"
+        },
+        {
+          "id": "groups",
+          "startMs": 3400,
+          "endMs": 6160,
+          "caption": "वह तीन टोकरियाँ एक पंक्ति में रखती है।",
+          "learningPurpose": "तीन बराबर समूह दिखाना।"
+        },
+        {
+          "id": "distribute",
+          "startMs": 6160,
+          "endMs": 8600,
+          "caption": "हर टोकरी में दो गाजरें जाती हैं।",
+          "learningPurpose": "हर समूह में ठीक दो गाजरें रखना।"
+        },
+        {
+          "id": "addition",
+          "startMs": 8600,
+          "endMs": 11680,
+          "caption": "दो जोड़ दो जोड़ दो बराबर छह।",
+          "learningPurpose": "बराबर समूहों को बार-बार जोड़ने से जोड़ना।"
+        },
+        {
+          "id": "multiplication",
+          "startMs": 11680,
+          "endMs": 15120,
+          "caption": "दो के तीन समूह छह होते हैं। यही गुणा है!",
+          "learningPurpose": "बराबर समूहों को गुणा से जोड़ना।"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+node_modules/
+.next/
+output/*.mp4
+output/*.json
+output/**/*.mp3
+output/**/*.json
+.env
+.env.*
+!.env.example
+*.log
+.remotion/
+
+# Local caches, generated media and build output
+.tmp/
+output/*
+!output/.gitkeep
+public/audio/
+public/images/prototypes/
+public/Claude.html
+public/Claude_files/
+*.tsbuildinfo
+next-env.d.ts
+.vercel/
+public/image.png

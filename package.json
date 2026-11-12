@@ -1,0 +1,39 @@
+{
+  "name": "ai-educational-story-video-poc",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Offline Stage 1 rendering proof for the rabbit-and-carrots multiplication lesson",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "npm --prefix web run dev",
+    "typecheck": "tsc --noEmit",
+    "elevenlabs:voices": "node --env-file=.env --import tsx scripts/list-elevenlabs-voices.ts",
+    "elevenlabs:evaluate": "node --env-file=.env --import tsx scripts/evaluate-elevenlabs-narration.ts",
+    "test": "tsx --test tests/*.test.ts",
+    "validate:storyboard": "tsx scripts/validate-storyboard.ts",
+    "render:english": "remotion render src/remotion/index.ts RabbitCarrots-English output/rabbit-carrots-en.mp4 --codec=h264 --crf=18 --concurrency=1",
+    "render:hindi": "remotion render src/remotion/index.ts RabbitCarrots-Hindi output/rabbit-carrots-hi.mp4 --codec=h264 --crf=18 --concurrency=1",
+    "render:prototype": "remotion render src/remotion/index.ts RabbitCarrots-VisualPrototype output/rabbit-carrots-visual-prototype.mp4 --codec=h264 --crf=18 --concurrency=1",
+    "render:lesson-visual": "remotion render src/remotion/index.ts RabbitCarrots-CompleteVisual output/rabbit-carrots-complete-visual.mp4 --codec=h264 --crf=18 --concurrency=1",
+    "render:all": "powershell.exe -ExecutionPolicy Bypass -File scripts/render-with-metrics.ps1",
+    "verify:media": "powershell.exe -ExecutionPolicy Bypass -File scripts/verify-media.ps1"
+  },
+  "dependencies": {
+    "@elevenlabs/elevenlabs-js": "^2.77.0",
+    "@remotion/cli": "4.0.542",
+    "@remotion/renderer": "4.0.542",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "remotion": "4.0.542",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@ffprobe-installer/ffprobe": "^2.1.2",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}
