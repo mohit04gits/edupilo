@@ -78,7 +78,9 @@ export async function failPlanning(projectId: string, inputHash: string, code: s
   const now = new Date();
   await connectMongo();
   await GenerationJobModel.collection.updateOne({ idempotencyKey: `plan:${projectId}:${inputHash}`, "attempts.outcome":"RUNNING" }, { $set: { state: "FAILED", error: { code, stage: "PLANNING", retryable, safeMessage: "AI planning is temporarily unavailable." }, finishedAt: now, updatedAt: now, "attempts.$.finishedAt": now, "attempts.$.outcome": "FAILED" } });
-  await LessonRequestModel.collection.updateOne({ _id: new Types.ObjectId(projectId), status: "PLANNING" }, { $set: { status: "DRAFT", updatedAt: now } });
+  const latest=await VideoPlanModel.findOne({lessonRequestId:new Types.ObjectId(projectId)}).sort({version:-1}).select({status:1,version:1}).lean() as unknown as {status?:string;version?:number}|null;
+  const restoredStatus=latest?.status==="APPROVED"?"APPROVED":latest?.status==="REVIEW_READY"?"REVIEW_READY":"DRAFT";
+  await LessonRequestModel.collection.updateOne({ _id: new Types.ObjectId(projectId), status: "PLANNING" }, { $set: { status: restoredStatus, ...(latest?.version?{currentPlanVersion:latest.version}:{}), updatedAt: now } });
 }
 
 export async function approveOwnedPlan(ownerId: string, projectId: string, planId: string) {

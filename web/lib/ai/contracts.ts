@@ -8,6 +8,8 @@ export interface LessonPlanningInput {
   deterministicFacts: Readonly<Record<string, string | number | readonly number[]>>;
   allowedAssetKeys: readonly string[];
   allowedActionTypes: readonly string[];
+  /** Present only for the single bounded quality-correction call. */
+  correctionFindings?: readonly string[];
 }
 export interface PlanCreator {
   createPlan(input: LessonPlanningInput, signal?: AbortSignal): Promise<NormalizedPlanDraft>;

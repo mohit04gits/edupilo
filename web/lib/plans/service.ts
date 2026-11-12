@@ -5,6 +5,7 @@ import { readPlanningAiConfig } from "../ai/config";
 import { CINEMATIC_ACTION_TYPES, validateEducationalFact, type IsoTimestamp, type ProviderUsage, type StoryboardVersion } from "../domain";
 import { findOwnedProject } from "../lessons";
 import { deterministicFactsFromInstruction, planMatchesExpectedFacts } from "./facts";
+import { validatePlanQuality } from "./quality";
 import { approvedAssetKeys, completePlanning, createPlanningJob, failPlanning, findLatestOwnedPlan, hashValue } from "./repository";
 
 export class PlanningError extends Error { constructor(public readonly code:string, public readonly safeMessage:string, public readonly status=500){super(code)} }
@@ -22,12 +23,17 @@ export async function generateOwnedPlan(ownerId:string, projectId:string, revisi
     const instruction=revision ? `${project.instruction}\n\nAdult revision request: ${revision}` : project.instruction;
     const input:LessonPlanningInput={learnerLevel:project.learnerLevel,locale:project.locale,subjectKey:project.subjectKey,topicKey:project.topicKey,instruction,deterministicFacts:facts.promptFacts,allowedAssetKeys:await approvedAssetKeys(),allowedActionTypes:CINEMATIC_ACTION_TYPES};
     const creator=new CloudflarePlanCreator(config.cloudflare),reviewer=new GroqPlanReviewer(config.groq);
-    const startPlan=Date.now(); const draft=await creator.createPlan(input); const planMs=Date.now()-startPlan;
+    const startPlan=Date.now(); let draft=await creator.createPlan(input); let creatorRequests=1;
+    let quality=validatePlanQuality(draft,project.learnerLevel);
+    if(!quality.valid){draft=await creator.createPlan({...input,correctionFindings:quality.findings.map(finding=>finding.message)});creatorRequests=2;quality=validatePlanQuality(draft,project.learnerLevel)}
+    const planMs=Date.now()-startPlan;
     const generatedFacts=draft.scenes.flatMap(scene=>scene.facts);
-    const deterministicValid=planMatchesExpectedFacts(facts.expectedFacts,generatedFacts)&&generatedFacts.every((fact,index)=>validateEducationalFact(fact,`facts[${index}]`).length===0);
-    const startReview=Date.now(); const review=await reviewer.reviewPlan(input,draft); const reviewMs=Date.now()-startReview;
+    const mathValid=planMatchesExpectedFacts(facts.expectedFacts,generatedFacts)&&generatedFacts.every((fact,index)=>validateEducationalFact(fact,`facts[${index}]`).length===0);
+    const deterministicValid=mathValid&&quality.valid;
+    const startReview=Date.now(); const providerReview=await reviewer.reviewPlan(input,draft); const reviewMs=Date.now()-startReview;
+    const review={...providerReview,disposition:(!quality.valid&&providerReview.disposition==="PASS"?"NEEDS_REVISION":providerReview.disposition),findings:[...quality.findings,...providerReview.findings],summary:quality.valid?providerReview.summary:`Deterministic age-quality checks require revision. ${providerReview.summary}`} as const;
     const contentHash=hashValue(draft); const now=new Date().toISOString() as IsoTimestamp;
-    const usage:ProviderUsage[]=[{provider:"cloudflare",operation:"PLAN",model:config.cloudflare.model,attempt:1,requestCount:1,latencyMs:planMs,cacheHit:false,estimatedCostMinor:0,currency:"USD",pricingSnapshot:"UNPRICED_RUNTIME_USAGE",recordedAt:now},{provider:"groq",operation:"REVIEW",model:config.groq.model,attempt:1,requestCount:1,latencyMs:reviewMs,cacheHit:false,estimatedCostMinor:0,currency:"USD",pricingSnapshot:"UNPRICED_RUNTIME_USAGE",recordedAt:now}];
+    const usage:ProviderUsage[]=[{provider:"cloudflare",operation:"PLAN",model:config.cloudflare.model,attempt:1,requestCount:creatorRequests,latencyMs:planMs,cacheHit:false,estimatedCostMinor:0,currency:"USD",pricingSnapshot:"UNPRICED_RUNTIME_USAGE",recordedAt:now},{provider:"groq",operation:"REVIEW",model:config.groq.model,attempt:1,requestCount:1,latencyMs:reviewMs,cacheHit:false,estimatedCostMinor:0,currency:"USD",pricingSnapshot:"UNPRICED_RUNTIME_USAGE",recordedAt:now}];
     return await completePlanning(ownerId,project,draft,review,deterministicValid,contentHash,usage,inputHash);
   }catch(error){
     const provider=error instanceof AiProviderError?error.failure:undefined;
