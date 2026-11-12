@@ -3,7 +3,7 @@ import { AiProviderError, type LessonPlanningInput, type PlanCreator } from "./c
 import { postJson, type FetchLike } from "./http";
 import { normalizePlan } from "./normalize";
 import { creatorSystemPrompt, planningPrompt } from "./prompts";
-import { planJsonSchema } from "./schemas";
+import { geminiPlanJsonSchema, withOmittedPlanDefaults } from "./schemas";
 export interface GeminiConfig {
   apiKey: string;
   model: string;
@@ -29,7 +29,7 @@ export class GeminiPlanCreator implements PlanCreator {
           generationConfig: {
             temperature: 0.4,
             responseMimeType: "application/json",
-            responseJsonSchema: planJsonSchema,
+            responseJsonSchema: geminiPlanJsonSchema,
           },
         },
         this.fetcher,
@@ -39,7 +39,7 @@ export class GeminiPlanCreator implements PlanCreator {
       const text = (response as { candidates?: { content?: { parts?: { text?: string }[] } }[] })
         .candidates?.[0]?.content?.parts?.[0]?.text;
       if (!text) throw new Error();
-      return normalizePlan(JSON.parse(text));
+      return normalizePlan(withOmittedPlanDefaults(JSON.parse(text)));
     } catch {
       throw new AiProviderError({
         provider: "gemini",

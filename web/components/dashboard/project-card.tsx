@@ -10,13 +10,11 @@ import {
 } from "@/lib/lessons/presentation";
 import { LEARNER_LABELS } from "@/lib/lessons/taxonomy";
 import { chip } from "../ui/styles";
+import { DeleteIdeaButton } from "../lessons/delete-idea-button";
 
 export function ProjectCard({ project }: { project: StoryProject }) {
   return (
-    <Link
-      href={`/stories/${project.id}`}
-      className="group flex h-full flex-col rounded-[20px] border border-line bg-white p-5 soft-shadow transition hover:-translate-y-0.5 hover:border-ink/30"
-    >
+    <div className="group relative flex h-full flex-col rounded-[20px] border border-line bg-white p-5 soft-shadow transition hover:-translate-y-0.5 hover:border-ink/30">
       <div className="flex items-start justify-between gap-3">
         <span className="rounded-full bg-mint px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-green">
           {PROJECT_STATUS_LABELS[project.status]}
@@ -34,9 +32,17 @@ export function ProjectCard({ project }: { project: StoryProject }) {
         {!isOpenIdea(project) && <span className={chip}>{subjectLabel(project.subjectKey)}</span>}
         <span className={chip}>{localeLabel(project.locale)}</span>
       </div>
-      <span className="mt-4 text-sm font-bold text-ink-2 transition group-hover:text-ink">
-        Open idea <span aria-hidden>→</span>
-      </span>
-    </Link>
+      <div className="mt-4 flex items-center justify-between gap-2">
+        <Link
+          href={`/stories/${project.id}`}
+          className="text-sm font-bold text-ink-2 transition after:absolute after:inset-0 after:rounded-[20px] group-hover:text-ink"
+        >
+          Open idea <span aria-hidden>→</span>
+        </Link>
+        <div className="relative z-10">
+          <DeleteIdeaButton projectId={project.id} compact />
+        </div>
+      </div>
+    </div>
   );
 }
